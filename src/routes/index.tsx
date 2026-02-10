@@ -1,5 +1,5 @@
-import { authMiddleware } from '@/middleware/auth'
 import { createFileRoute } from '@tanstack/react-router'
+import { authMiddleware } from '@/middleware/auth'
 
 export const Route = createFileRoute('/')({
   component: App,

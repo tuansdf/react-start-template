@@ -82,15 +82,27 @@ Always use `@/` imports. Never use relative paths like `../../`.
 
 ## Scripts
 
-| Command        | Purpose                         |
-| -------------- | ------------------------------- |
-| `pnpm dev`     | Start dev server on port 3000   |
-| `pnpm build`   | Production build via Vite       |
-| `pnpm preview` | Preview production build        |
-| `pnpm test`    | Run Vitest                      |
-| `pnpm lint`    | Run ESLint                      |
-| `pnpm format`  | Run Prettier                    |
-| `pnpm check`   | Prettier --write + ESLint --fix |
+| Command            | Purpose                         |
+| ------------------ | ------------------------------- |
+| `pnpm dev`         | Start dev server on port 3000   |
+| `pnpm build`       | Production build via Vite       |
+| `pnpm preview`     | Preview production build        |
+| `pnpm test`        | Run Vitest                      |
+| `pnpm lint`        | Run ESLint                      |
+| `pnpm typecheck`   | Run TypeScript type checking    |
+| `pnpm format`      | Run Prettier                    |
+| `pnpm check`       | Prettier --write + ESLint --fix |
+| `pnpm db:generate` | Generate Drizzle migrations     |
+| `pnpm db:migrate`  | Run Drizzle migrations          |
+| `pnpm db:push`     | Push schema to database         |
+| `pnpm db:studio`   | Open Drizzle Studio             |
+
+### Verification Flow
+
+After implementing changes, always run these commands in order:
+
+1. `pnpm typecheck` — ensure no TypeScript errors
+2. `pnpm check` — format with Prettier and fix ESLint issues
 
 ---
 

@@ -15,3 +15,5 @@ todos.json
 .env
 .env.*
 !.env.example
+
+*.tsbuildinfo
