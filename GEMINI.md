@@ -35,6 +35,8 @@
 │   ├── lib/
 │   │   ├── auth/
 │   │   │   └── client.ts          # Better Auth React client (browser-side)
+│   │   ├── validator/
+│   │   │   └── zod-resolver.ts    # Custom Zod v4 resolver for React Hook Form
 │   │   └── utils.ts               # cn() helper (clsx + tailwind-merge)
 │   ├── middleware/
 │   │   └── auth.ts                # Request middleware (createMiddleware)
@@ -101,8 +103,7 @@ Always use `@/` imports. Never use relative paths like `../../`.
 
 After implementing changes, always run these commands in order:
 
-1. `pnpm typecheck` — ensure no TypeScript errors
-2. `pnpm check` — format with Prettier and fix ESLint issues
+1. `pnpm check` — typecheck, format with Prettier and fix ESLint issues
 
 ---
 
@@ -114,6 +115,39 @@ After implementing changes, always run these commands in order:
 - **Strict TypeScript** — `strict: true`, `noUnusedLocals`, `noUnusedParameters`
 - Use **named function declarations** for route components (not arrow functions)
 - Export route as `export const Route = createFileRoute(...)(...)`
+- Follow typescript eslint convention
+
+### Naming Conventions
+
+- **camelCase** for variables, functions, and methods
+- **PascalCase** for types, interfaces, enums, and React components
+- **UPPER_SNAKE_CASE** for constants and enum members
+- **camelCase** for object/record keys
+- Boolean variables should use `is`, `has`, `should` prefixes (e.g. `isLoading`, `hasError`)
+
+### Import Order
+
+Imports should be ordered (enforced by ESLint):
+
+1. Side-effect imports (`import '@/styles.css'`)
+2. Built-in Node modules (`node:fs`, `node:path`)
+3. External packages (`react`, `zod`, `@tanstack/*`)
+4. Internal aliases (`@/components/*`, `@/lib/*`, `@/server/*`)
+5. Relative imports (avoid beyond one level)
+6. Type-only imports (`import type { ... }`)
+
+Separate groups with a blank line. Example:
+
+```tsx
+import '@/styles.css'
+
+import { createFileRoute } from '@tanstack/react-router'
+import * as z from 'zod'
+
+import { Button } from '@/components/ui/button'
+
+import type { CommonResponse } from '@/types'
+```
 
 ---
 
@@ -510,7 +544,7 @@ Use **React Hook Form** for all form state management. Pair with Zod for validat
 ```tsx
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from '@/lib/validator/zod-resolver'
 import {
   Field,
   FieldError,
@@ -582,7 +616,7 @@ function CreateUserForm() {
 ### Conventions
 
 - Define form schemas as **Zod objects** — co-locate with the form or in a shared `.schema.ts` file
-- Use `zodResolver` from `@hookform/resolvers/zod` for validation
+- Use `zodResolver` from `@/lib/validator/zod-resolver` for validation
 - **Prioritize `Controller`** for all inputs — it provides consistent control via `field` props and works with both native and custom components
 - Type form values with `z.infer<typeof schema>` — never manually define form types
 - Submit via `createServerFn` for server-side actions

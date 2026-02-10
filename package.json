@@ -10,7 +10,7 @@
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "format": "prettier",
-    "check": "prettier --write . && eslint src --fix",
+    "check": "tsc --noEmit && prettier --write . && eslint src --fix",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
