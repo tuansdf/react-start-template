@@ -1,3 +1,4 @@
+import pino from 'pino'
 import { z } from 'zod'
 
 const envSchema = z.object({
@@ -15,7 +16,7 @@ function loadEnv(): Env {
   try {
     return envSchema.parse(process.env)
   } catch (error) {
-    console.error('Invalid environment variables:', error)
+    pino().error(error, 'Invalid environment variables')
     process.exit(1)
   }
 }

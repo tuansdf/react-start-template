@@ -16,6 +16,7 @@
 | Styling         | TailwindCSS v4 + `tw-animate-css`                         | v4                |
 | Auth            | Better Auth (email + password, admin plugin)              | v1                |
 | Database ORM    | Drizzle ORM (PostgreSQL via `pg`)                         | v0.45             |
+| Logging         | Pino (`pino-pretty` in dev)                               | v10               |
 | Validation      | Zod                                                       | v4                |
 | Forms           | React Hook Form                                           | v7                |
 | React           | React 19 + React Compiler (`babel-plugin-react-compiler`) | v19               |
@@ -55,11 +56,12 @@
 │   │       │   └── client.ts      # Better Auth server instance
 │   │       ├── config/
 │   │       │   └── env.ts         # Zod-validated environment variables
-│   │       └── db/
+│   │       ├── db/
 │   │           ├── client.ts      # Drizzle ORM client (pg Pool)
 │   │           └── schema/
 │   │               ├── index.ts   # Re-export for schemas (only barrel export in the project)
 │   │               └── auth.ts    # Better Auth schema (user, session, account, verification)
+│   │       └── logger.ts          # Pino logger singleton
 │   ├── router.tsx                 # Router factory (createRouter)
 │   ├── routeTree.gen.ts           # AUTO-GENERATED — never edit
 │   └── styles.css                 # Global styles, shadcn theme tokens, Tailwind imports
@@ -491,6 +493,37 @@ When adding new env vars:
 
 1. Add to the Zod schema in `env.ts`
 2. Add to `.env` and `.env.example`
+
+---
+
+## Logging (Pino)
+
+The project uses **Pino** for structured server-side logging. The singleton logger lives at `src/server/lib/logger.ts`.
+
+- **Log level** is controlled by the `LOG_LEVEL` env var (`debug`, `info`, `warn`, `error` — default `info`)
+- **Development**: uses `pino-pretty` transport for human-readable, colorized output
+- **Production**: outputs structured JSON logs (no transport)
+
+### Usage
+
+```ts
+import { logger } from '@/server/lib/logger'
+
+logger.info('Server started')
+logger.info({ userId: '123' }, 'User signed in')
+logger.error(error, 'Failed to process request')
+```
+
+### Child Loggers
+
+Use child loggers to add persistent context (e.g., per-request or per-module):
+
+```ts
+const log = logger.child({ module: 'billing' })
+log.info('Invoice created') // includes { module: 'billing' } in every log
+```
+
+> **Do NOT use `console.log` / `console.error`** in server code — always use the pino logger.
 
 ---
 
